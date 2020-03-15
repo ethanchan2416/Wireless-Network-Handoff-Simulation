@@ -63,6 +63,7 @@ end
 
 Pavg = sum(Psum(:,2:5)) / sum(Psum(:,1));
 toc
+
 %% plot
 figure
 grid on; hold on;
@@ -77,6 +78,7 @@ plot(T, nHandoffArray(1:length(T), 4), 'DisplayName',lgn_txt, 'LineWidth',0.75);
 lgn = legend; lgn.FontSize = 16;
 xlabel('Time (Sec)', 'FontSize',16);
 ylabel('Num of Handoff', 'FontSize',16);
+
 %% functions
 function stepDrive(ObjArray)
     for i=1:numel(ObjArray)
