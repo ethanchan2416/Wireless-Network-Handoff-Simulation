@@ -151,7 +151,7 @@ classdef CCar < handle
             end
         end
         
-        % (4) My Method
+        % (4) My (Threshold Distance) Method
         function myMethod(obj)
             SignalPower = sigPower(obj);
             best_signal = max(SignalPower);
