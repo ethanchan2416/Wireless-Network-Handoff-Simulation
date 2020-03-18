@@ -8,10 +8,12 @@ A 16-city-block traffic cross-section is shown below:
 
     -----x----x----x-----
     |    |    |    |    |
-    x----O---------O----x        *O: Base Station (BS)*
+    x----O---------O----x        O: Base Station (BS)
     |    |    |    |    |
-    x-------------------x        *x: Car Entry/Exit Points*
+    x-------------------x        x: Car Entry/Exit Points
     |    |    |    |    |
-    x----O---------O----x
+    x----O---------O----x        - & |: Roads
     |    |    |    |    |
     -----x----x----x-----
+
+1. At the entry points *x*, cars are generated according to **Poisson distribution** with an arrival rate of $\lambda$ = 2 cars / min.
