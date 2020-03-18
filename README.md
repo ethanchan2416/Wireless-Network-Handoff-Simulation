@@ -41,6 +41,6 @@ Hand-off happens when the transmission power **_Pnew_** from a BS **> _Pold_** f
 Hand-off happens when **_Pnew_ > _Pold_** and **_Pold_ < threshold**, threshold = -110 dBm
 #### Entropy
 Hand-off happens when **_Pnew_ > _Pold_ + entropy**, entropy = 5 dBm
-#### Maximum Distance
+#### Threshold Distance
 1. Hand-off happens when the **distance between the car and BS > 1500m**
 2. The car then **connects to the strongest signal** within its vincinity
