@@ -2,7 +2,7 @@
 ## Purpose
 Realize and observe the characteristics of 4 different hand-off principles in a simulated 16-city-block traffic cross-section with cars generated according to Poisson's distribution.
 ## Objective
-Considering (1) the best relative signal principle, (2) threshold principle, (3) entropy principle and (4) a principle of your choice, obtain the **total number of handoffs** for each principle over the duration of 1 day (86400s). Also acquire the **average signal power** for each principle.
+Considering (1) the best relative signal principle, (2) threshold principle, (3) entropy principle and (4) a principle of your choice, **obtain the total number of handoffs** for each principle over the duration of 1 day (86400s). Also **acquire the average signal power** for each principle.
 ## Problem Discription
 A 16-city-block traffic cross-section is shown below:
 
