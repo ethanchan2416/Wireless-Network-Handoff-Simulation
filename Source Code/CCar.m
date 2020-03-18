@@ -2,12 +2,12 @@ classdef CCar < handle
     
     properties 
         status = 1  %... in system = 1, offbounds = 0
-        x {mustBeNumeric}
-        y {mustBeNumeric}
-        direction {mustBeNumeric}
-        Base {mustBeNumeric}
-        Signal_power {mustBeNumeric}
-        Handoff = zeros(4, 1)  %... default handoff = 0
+        x {mustBeNumeric}  %... x coordinate
+        y {mustBeNumeric}  %... y coordinate
+        direction {mustBeNumeric}  %... direction car is heading towards
+        Base {mustBeNumeric}  %... BS car is connected to
+        Signal_power {mustBeNumeric}  %... received signal power from BS
+        Handoff = zeros(4, 1)  %... default # of handoff = 0
     end
     properties (SetAccess = private, Hidden = true)
         Pt = -50;     P1 = -60;     Pmin = -125;  %... dBm
@@ -29,6 +29,7 @@ classdef CCar < handle
             obj.y = y;
             obj.direction = direction;
             
+            % assign car to corresponding BS based on position of spawn
             if obj.direction == 2
                 if obj.y == obj.square_length * 3
                     obj.Base = 1 * ones(4, 1);
@@ -55,6 +56,7 @@ classdef CCar < handle
                 end
             end
             
+            % initialize signal power received from 4 BSs
             SignalPower = sigPower(obj);
             obj.Signal_power = SignalPower(obj.Base(1)) * ones(4, 1);
         end
@@ -62,13 +64,13 @@ classdef CCar < handle
         % Drive Car Per Second
         function stepDrive(obj)
             [obj.x, obj.y, obj.direction] = stepDrive(obj.x, obj.y, obj.direction);
-            
+            % check if car is offbound
             if obj.x < 0 || obj.y < 0 || obj.x > obj.x_boundary || obj.y > obj.y_boundary
                 obj.status = 0;
             end
         end
         
-        % Signal Power
+        % Determine Signal Power
         function SignalPower = sigPower(obj)
             Obj_Coor = [obj.x, obj.y];
             Distance = [norm(Obj_Coor - obj.BS1_Coor);
