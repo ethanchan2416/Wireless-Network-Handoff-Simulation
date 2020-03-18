@@ -18,6 +18,7 @@ A 16-city-block traffic cross-section is shown below:
 
 ### General Rules
 1. Simulation interval = 1 sec, duration = 86400 sec (1 day)
+2. The distance between each intersection is 750 m (whole system = 3 km x 3 km)
 2. Every second new cars are generated at the entry points *x* based on Poisson's distribution
 3. As soon as a car enters the system it is connected to a base station
 4. Each car will only connect to one base station at a given time
@@ -41,5 +42,5 @@ Hand-off happens when **_Pnew_ > _Pold_** and **_Pold_ < threshold**, threshold 
 #### Entropy
 Hand-off happens when **_Pnew_ > _Pold_ + entropy**, entropy = 5 dBm
 #### Maximum Distance
-Hand-off happens when the **distance between the car and BS > 1500m**
-The then car connects to the strongest signal within its vincinity
+1. Hand-off happens when the **distance between the car and BS > 1500m**
+2. The car then connects to the strongest signal within its vincinity
