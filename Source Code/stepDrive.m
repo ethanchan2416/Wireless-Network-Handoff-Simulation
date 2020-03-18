@@ -1,5 +1,5 @@
 function [new_x_car, new_y_car, new_direction] = stepDrive(x_car, y_car, direction)
-    square_length = 750;
+    square_length = 750;  %... distance between two intersections
     % straight 1/2, right 1/3, left 1/6
     P_straight = 1/2;  P_rightTurn = 1/3;  P_leftTurn = 1/6;
     speed = 10;  %... m/s
@@ -34,13 +34,12 @@ function [new_x_car, new_y_car, new_direction] = stepDrive(x_car, y_car, directi
                 new_direction = 3;
             end
         end
-        
+    % don't turn    
     else
-        % don't turn
         new_direction = direction;
     end
     
-    % move forward
+    % finally, move car forward one step
     [new_x_car, new_y_car] = moveForward(x_car, y_car, new_direction, speed);
     
     
