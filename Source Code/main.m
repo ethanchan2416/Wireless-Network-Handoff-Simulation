@@ -1,10 +1,14 @@
 clear; clc; close all;
-tic
-T = 1:1:600;
+
+tic  %... start timer
+simDuration = 1800;  %... unit in sec (actually simDuration = 86400 but sim takes a long time)
+T = 1:1:simDuration;
+
+% initialize (x, y) coordinates for car entry positions 1~12 (see Problem_Discription_Labeling_Convention.jpg)
 Init_Coors = [750, 750, 1] .* [0, 1, 2; 0, 2, 2; 0, 3, 2;
                                1, 4, 3; 2, 4, 3; 3, 4, 3;
                                4, 3, 4; 4, 2, 4; 4, 1, 4;
-                               3, 0, 1; 2, 0, 1; 1, 0, 1;];  %... clockwise
+                               3, 0, 1; 2, 0, 1; 1, 0, 1;];  %... clockwise assignment
 
 nCar = 0;
 nHandoffArray = zeros(86400, 4);
