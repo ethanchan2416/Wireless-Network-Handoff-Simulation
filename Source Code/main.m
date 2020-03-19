@@ -74,8 +74,6 @@ toc  %... end timer
 
 %% plot
 
-
-
 figure
 grid on; hold on;
 % best relative signal
@@ -98,8 +96,6 @@ ylabel('Number of Handoffs', 'FontSize',16);
 
 
 %% functions
-
-
 
 % Simulate next step for every car
 function stepDrive(ObjArray)
