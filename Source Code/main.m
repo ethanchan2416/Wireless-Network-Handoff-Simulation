@@ -15,7 +15,7 @@ nHandoffArray = zeros(86400, 4);  %... accumulated number of handoffs per method
 Psum = zeros(86400, 5);  %... sum of signal power per second per method (best, threshold, entropy, my)
 nXBoundHandoff = 0;  %... number of handoffs from cars that went off-bounds this sec
 for t=1:length(T)
-    % 1. Add new cars
+% 1. Add new cars
     nNew = 0;  %... number of new cars added this sec
     for i=1:length(Init_Coors)
         if poissonGenerateCar
@@ -28,35 +28,35 @@ for t=1:length(T)
     end
 
     if nCar > 0
-        % 2. Drive cars forward one step (stepDrive)
+% 2. Drive cars forward one step
         stepDrive(CarRoster);
         
-        % 2. Get number of handoffs from cars that exceeded bounds in this sec
+% 3. Get number of handoffs from cars that exceeded bounds in this sec
         nXBoundHandoff = getNXBoundHandoff(CarRoster, nXBoundHandoff);
         
-        % 3. Remove car if car exceeded bounds
+% 4. Remove car if car exceeded bounds
         CarRoster = isInbounds(CarRoster);
         nCar = numel(CarRoster);
         
-        % 4. Calculate handoff methods
+% 5. Perform handoff methods
         bestSigMethod(CarRoster);
         thresholdMethod(CarRoster);
         entropyMethod(CarRoster);
         myMethod(CarRoster);
         
-        % Plot simulation (Optional)
+% Plot simulation (Optional)
         plotCCar(CarRoster, nCar, "my");  %... 3rd parameter 'method' = 'best', 'threshold', 'entropy', 'my'
         pause(0.01);
     end
     
-    % 5. Tally accumulated number of handoffs up to t sec
+% 6. Tally accumulated number of handoffs up to t sec
     if nCar == 0
         nHandoffArray(t,:) = 0;
     else
         nHandoffArray(t,:) = tallyHandoff(CarRoster, nXBoundHandoff);
     end
     
-    % 6. Record sum of signal power at t sec
+% 7. Record sum of signal power at t sec
     if nCar == 0
         Psum(t,:) = 0;
     else
@@ -65,12 +65,17 @@ for t=1:length(T)
     
 end
 
-% 7. Calculate average signal power per day per method (best, threshold, entropy, my)
+% 8. Calculate average signal power per day per method (best, threshold, entropy, my)
 Pavg = sum(Psum(:,2:5)) / sum(Psum(:,1));
 
 toc  %... end timer
 
+
+
 %% plot
+
+
+
 figure
 grid on; hold on;
 % best relative signal
@@ -90,7 +95,11 @@ lgn = legend; lgn.FontSize = 16;
 xlabel('Time (Sec)', 'FontSize',16);
 ylabel('Number of Handoffs', 'FontSize',16);
 
+
+
 %% functions
+
+
 
 % Simulate next step for every car
 function stepDrive(ObjArray)
