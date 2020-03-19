@@ -18,7 +18,7 @@ A 16-city-block traffic cross-section is shown below:
 
 ### General Rules
 1. Simulation interval = 1 sec, duration = 86400 sec (1 day)
-2. Origin (0,0) at bottom left corner
+2. Origin (0, 0) at bottom left corner
 3. The distance between each intersection is 750 m (whole system = 3 km x 3 km)
 4. Every second new cars are generated at the entry points *x* based on Poisson's distribution
 5. As soon as a car enters the system it is connected to a base station
