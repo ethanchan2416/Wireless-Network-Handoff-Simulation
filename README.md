@@ -18,12 +18,13 @@ A 16-city-block traffic cross-section is shown below:
 
 ### General Rules
 1. Simulation interval = 1 sec, duration = 86400 sec (1 day)
-2. The distance between each intersection is 750 m (whole system = 3 km x 3 km)
-2. Every second new cars are generated at the entry points *x* based on Poisson's distribution
-3. As soon as a car enters the system it is connected to a base station
-4. Each car will only connect to one base station at a given time
-5. Cars will move around in the system (but never in reverse)
-6. If a car leaves the system via an exit point, the car is lost forever
+2. Origin (0,0) at bottom left corner
+3. The distance between each intersection is 750 m (whole system = 3 km x 3 km)
+4. Every second new cars are generated at the entry points *x* based on Poisson's distribution
+5. As soon as a car enters the system it is connected to a base station
+6. Each car will only connect to one base station at a given time
+7. Cars will move around in the system (but never in reverse)
+8. If a car leaves the system via an exit point, the car is lost forever
 
 ### Base Station (BS) Characteristics
 1. Base station transmission power **_Pt_ = -50 dBm**
