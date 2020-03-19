@@ -10,13 +10,13 @@ Init_Coors = [750, 750, 1] .* [0, 1, 2; 0, 2, 2; 0, 3, 2;
                                4, 3, 4; 4, 2, 4; 4, 1, 4;
                                3, 0, 1; 2, 0, 1; 1, 0, 1;];  %... clockwise assignment
 
-nCar = 0;
-nHandoffArray = zeros(86400, 4);
-Psum = zeros(86400, 5);
-nXBoundHandoff = 0;
+nCar = 0;  %... current number of cars in the system
+nHandoffArray = zeros(86400, 4);  %... accumulated number of handoffs per method (best, threshold, entropy, my)
+Psum = zeros(86400, 5);  %... sum of signal power per second per method (best, threshold, entropy, my)
+nXBoundHandoff = 0;  %... number of handoffs from cars that went off-bounds this sec
 for t=1:length(T)
-    % 1. add new cars
-    nNew = 0;
+    % 1. Add new cars
+    nNew = 0;  %... number of new cars added this sec
     for i=1:length(Init_Coors)
         if poissonGenerateCar
             nCar = nCar + 1;
@@ -28,35 +28,35 @@ for t=1:length(T)
     end
 
     if nCar > 0
-        % 2. car stepdrive
+        % 2. Drive cars forward one step (stepDrive)
         stepDrive(CarRoster);
         
-        % 2. get nHandoff from cars that exceeded bounds in this sec
+        % 2. Get number of handoffs from cars that exceeded bounds in this sec
         nXBoundHandoff = getNXBoundHandoff(CarRoster, nXBoundHandoff);
         
-        % 3. if car exceed bounds remove car
+        % 3. Remove car if car exceeded bounds
         CarRoster = isInbounds(CarRoster);
         nCar = numel(CarRoster);
         
-        % 4. calculate handoff methods
+        % 4. Calculate handoff methods
         bestSigMethod(CarRoster);
         thresholdMethod(CarRoster);
         entropyMethod(CarRoster);
         myMethod(CarRoster);
         
-        % plot simulation
-        plotCCar(CarRoster, nCar, "my");
+        % Plot simulation (Optional)
+        plotCCar(CarRoster, nCar, "my");  %... 3rd parameter 'method' = 'best', 'threshold', 'entropy', 'my'
         pause(0.01);
     end
     
-    % 5. tally total handoffs until t sec
+    % 5. Tally accumulated number of handoffs up to t sec
     if nCar == 0
         nHandoffArray(t,:) = 0;
     else
         nHandoffArray(t,:) = tallyHandoff(CarRoster, nXBoundHandoff);
     end
     
-    % 6. record Paverage at t sec
+    % 6. Record sum of signal power at t sec
     if nCar == 0
         Psum(t,:) = 0;
     else
@@ -65,31 +65,41 @@ for t=1:length(T)
     
 end
 
+% 7. Calculate average signal power per day per method (best, threshold, entropy, my)
 Pavg = sum(Psum(:,2:5)) / sum(Psum(:,1));
-toc
+
+toc  %... end timer
 
 %% plot
 figure
 grid on; hold on;
+% best relative signal
 lgn_txt = sprintf('Best, Pavg = %.3f dBm', Pavg(1));
 plot(T, nHandoffArray(1:length(T), 1), 'DisplayName',lgn_txt, 'LineWidth',0.75);
+% threshold
 lgn_txt = sprintf('Threshold, Pavg = %.3f dBm', Pavg(2));
 plot(T, nHandoffArray(1:length(T), 2), 'DisplayName',lgn_txt, 'LineWidth',0.75);
+% entropy
 lgn_txt = sprintf('Entropy, Pavg = %.3f dBm', Pavg(3));
 plot(T, nHandoffArray(1:length(T), 3), 'DisplayName',lgn_txt, 'LineWidth',0.75);
+% my (threshold distance)
 lgn_txt = sprintf('Mine, Pavg = %.3f dBm', Pavg(4));
 plot(T, nHandoffArray(1:length(T), 4), 'DisplayName',lgn_txt, 'LineWidth',0.75);
+
 lgn = legend; lgn.FontSize = 16;
 xlabel('Time (Sec)', 'FontSize',16);
-ylabel('Num of Handoff', 'FontSize',16);
+ylabel('Number of Handoffs', 'FontSize',16);
 
 %% functions
+
+% Simulate next step for every car
 function stepDrive(ObjArray)
     for i=1:numel(ObjArray)
         ObjArray(i).stepDrive;
     end
 end
 
+% Get number of handoffs from the cars that exited the system in this sec
 function new_nXBoundHandoff = getNXBoundHandoff(ObjArray, nXBoundHandoff)
     car_num = numel(ObjArray);
     nXBoundHandoffThisSec = 0;
@@ -101,6 +111,7 @@ function new_nXBoundHandoff = getNXBoundHandoff(ObjArray, nXBoundHandoff)
     new_nXBoundHandoff = nXBoundHandoff + nXBoundHandoffThisSec;
 end
 
+% Check if cars are in bound (in the system)
 function ObjArray = isInbounds(ObjArray)
     car_num = numel(ObjArray);
     for i=car_num:-1:1
@@ -134,6 +145,7 @@ function myMethod(ObjArray)
     end
 end
 
+% Tally accumulated number of handoffs up to current sec for each method
 function nHandoff = tallyHandoff(ObjArray, nXBoundHandoff)
     nInBoundHandoff = 0;
     for i=1:numel(ObjArray)
@@ -142,6 +154,7 @@ function nHandoff = tallyHandoff(ObjArray, nXBoundHandoff)
     nHandoff = nInBoundHandoff + nXBoundHandoff;
 end
 
+% Get sum of signal power at t sec. instance for each method
 function PsumPerSec = getPsumPerSec(ObjArray)
     PsumPerSec = zeros(5, 1);
     PsumPerSec(1) = numel(ObjArray);
@@ -150,6 +163,7 @@ function PsumPerSec = getPsumPerSec(ObjArray)
     end
 end
 
+% Plot simulation animation
 function plotCCar(CarRoster, nCar, method)
     if method == "best"
         type = 1;
@@ -160,7 +174,7 @@ function plotCCar(CarRoster, nCar, method)
     elseif method == "my"
         type = 4;
     end
-    
+    % Assign cars' (x, y) coordinates to the BSs they are connected to
     nB1 = 0; nB2 = 0; nB3 = 0; nB4 = 0;
     X_B1 = zeros(1, 100); Y_B1 = zeros(1, 100);
     X_B2 = zeros(1, 100); Y_B2 = zeros(1, 100);
@@ -185,7 +199,7 @@ function plotCCar(CarRoster, nCar, method)
             Y_B4(nB4) = CarRoster(j).y;
         end
     end
-
+    % If # of cars > 0, plot the cars according to their BSs' colors
     if nB1 > 0
         plot(X_B1, Y_B1, 'squareb', 'LineWidth',1)
         hold on;
@@ -202,10 +216,12 @@ function plotCCar(CarRoster, nCar, method)
         plot(X_B4, Y_B4, 'squareg', 'LineWidth',1)
         hold on;
     end
-    viscircles([750, 750], 1500, 'Color',[0.4660 0.6740 0.1880], 'LineWidth',0.5);
-    viscircles([750, 2250], 1500, 'Color',[0 0.4470 0.7410], 'LineWidth',0.5);
-    viscircles([2250, 2250], 1500, 'Color',[0.6350 0.0780 0.1840], 'LineWidth',0.5);
-    viscircles([2250, 750], 1500, 'Color',[0 0 0], 'LineWidth',0.5);
+    % Draw base stations 1~4
+    viscircles([750, 750], 150, 'Color',[0.4660 0.6740 0.1880], 'LineWidth',0.5);  %... BS4
+    viscircles([750, 2250], 150, 'Color',[0 0.4470 0.7410], 'LineWidth',0.5);  %... BS1
+    viscircles([2250, 2250], 150, 'Color',[0.6350 0.0780 0.1840], 'LineWidth',0.5);  %... BS2
+    viscircles([2250, 750], 150, 'Color',[0 0 0], 'LineWidth',0.5);  %... BS3
+    
     grid on; hold off;
     xticks(0:750:3000);   xlim([0 3000]);
     yticks(0:750:3000);   ylim([0 3000]);
