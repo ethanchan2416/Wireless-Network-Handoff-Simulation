@@ -13,7 +13,7 @@ Init_Coors = [750, 750, 1] .* [0, 1, 2; 0, 2, 2; 0, 3, 2;
 nCar = 0;  %... current number of cars in the system
 nHandoffArray = zeros(86400, 4);  %... accumulated number of handoffs per method (best, threshold, entropy, my)
 Psum = zeros(86400, 5);  %... sum of signal power per second per method (best, threshold, entropy, my)
-nXBoundHandoff = 0;  %... number of handoffs from cars that went off-bounds this sec
+nXBoundHandoff = 0;  %... number of handoffs from cars that exited the system this sec
 for t=1:length(T)
 % 1. Add new cars
     nNew = 0;  %... number of new cars added this sec
@@ -31,10 +31,10 @@ for t=1:length(T)
 % 2. Drive cars forward one step
         stepDrive(CarRoster);
         
-% 3. Get number of handoffs from cars that exceeded bounds in this sec
+% 3. Get number of handoffs from cars that exited the system (went off-bounds) during this sec
         nXBoundHandoff = getNXBoundHandoff(CarRoster, nXBoundHandoff);
         
-% 4. Remove car if car exceeded bounds
+% 4. Remove car if car exited system
         CarRoster = isInbounds(CarRoster);
         nCar = numel(CarRoster);
         
@@ -104,7 +104,7 @@ function stepDrive(ObjArray)
     end
 end
 
-% Get number of handoffs from the cars that exited the system in this sec
+% Get number of handoffs from the cars that exited the system during this sec
 function new_nXBoundHandoff = getNXBoundHandoff(ObjArray, nXBoundHandoff)
     car_num = numel(ObjArray);
     nXBoundHandoffThisSec = 0;
